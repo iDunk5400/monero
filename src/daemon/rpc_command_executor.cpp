@@ -849,7 +849,7 @@ bool t_rpc_command_executor::print_transaction_pool_stats() {
   }
 
   size_t n_transactions = res.transactions.size();
-  size_t bytes = 0, min_bytes = 0, max_bytes = 0;
+  size_t bytes = 0, min_bytes = 0, max_bytes = 0, tx_size = 0;
   size_t n_not_relayed = 0;
   uint64_t fee = 0;
   uint64_t oldest = 0;
@@ -859,10 +859,11 @@ bool t_rpc_command_executor::print_transaction_pool_stats() {
   for (const auto &tx_info: res.transactions)
   {
     bytes += tx_info.blob_size;
+    tx_size = tx_info.blob_size;
     if (min_bytes == 0 || bytes < min_bytes)
       min_bytes = bytes;
-    if (bytes > max_bytes)
-      max_bytes = bytes;
+    if (tx_size > max_bytes)
+      max_bytes = tx_size;
     if (!tx_info.relayed)
       n_not_relayed++;
     fee += tx_info.fee;
